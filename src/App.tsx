@@ -2,7 +2,7 @@ import React from "react";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Sheduler from "./components/Sheduler/Sheduler";
-import { genUsl, oneUsl } from "./mock/mockData";
+import { genUsl, oneUsl } from "./components/Sheduler/mockData";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
