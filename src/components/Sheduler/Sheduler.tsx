@@ -66,7 +66,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Sheduler(props: ShedulerPropsType) {
+const Sheduler = (props: ShedulerPropsType) => {
   const classes = useStyles();
   const { usl } = props;
   const [dt] = React.useState(props.dt ? props.dt : new Date());
@@ -75,7 +75,7 @@ export default function Sheduler(props: ShedulerPropsType) {
     rows: [],
   });
 
-  const RenderDay = (usls: OneUslType[]) => {
+  const renderDay = (usls: OneUslType[]) => {
     return (
       <div className={classes.nowrap}>
         {usls
@@ -125,7 +125,7 @@ export default function Sheduler(props: ShedulerPropsType) {
     }
     // Один день назначений
     if (col.ctype === "data" && row.ctype === "usl") {
-      return RenderDay(
+      return renderDay(
         usl
           .filter((i) => i.tday === col.label)
           .filter((i) => i.name === row.value)
@@ -228,3 +228,7 @@ export default function Sheduler(props: ShedulerPropsType) {
     </TableContainer>
   );
 }
+
+
+
+export default Sheduler
