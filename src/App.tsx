@@ -3,33 +3,53 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Sheduler from "./components/Sheduler/Sheduler";
 import { genUsl, oneUsl } from "./mock/mockData";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: 0,
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
     },
     paper: {
       padding: theme.spacing(2),
-    }
+    },
   })
 );
 
 function App() {
   const classes = useStyles();
-  const [usl, setUsl] = React.useState<oneUsl[]>(genUsl(100));
+  const [num, setNum] = React.useState(100);
+  const [usl, setUsl] = React.useState<oneUsl[]>(genUsl(num));
 
-   React.useEffect(() => {
-    //  console.log("Usl: ", usl);
+  React.useEffect(() => {
+    console.log("Usl: ", usl);
   }, [usl]);
 
   return (
     <div className={classes.root}>
       <Paper elevation={3} className={classes.paper}>
         <h3>Таблица назначений</h3>
-        <Sheduler usl={usl} />
+        <input
+          type="range"
+          id="vol"
+          name="vol"
+          min="20"
+          max="200"
+          value={num}
+          onChange={(e) => setNum(parseInt(e.target.value))}
+        ></input>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setUsl(genUsl(num))}
+        >
+          Сгенерировать ({num})
+        </Button>
+        <div style={{ paddingTop: 16 }}>
+          <Sheduler usl={usl} />
+        </div>
       </Paper>
     </div>
   );

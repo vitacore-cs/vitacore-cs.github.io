@@ -7,9 +7,33 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { oneUsl } from "../../mock/mockData";
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import CheckIcon from '@material-ui/icons/Check';
-import BlockIcon from '@material-ui/icons/Block';
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
+import CheckIcon from "@material-ui/icons/Check";
+import BlockIcon from "@material-ui/icons/Block";
+
+const days = [
+  "Воскресенье",
+  "Понедельник",
+  "Вторник",
+  "Среда",
+  "Четверг",
+  "Пятница",
+  "Суббота",
+];
+const months = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+];
 
 type ShedulerPropsType = {
   usl: oneUsl[];
@@ -28,15 +52,31 @@ const useStyles = makeStyles({
     background: "#fff",
     left: 0,
     zIndex: 1,
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+    borderLeft: "1px solid rgba(224, 224, 224, 1)",
   },
   sheduledIcon: {
-      color: 'white',
-      backgroundColor: '#c4c4c4',
-      padding: "4px 8px",
-      marginLeft: "2px",
-      borderRadius: "4px",
-      fontSize: 14
-  }
+    color: "white",
+    backgroundColor: "#c4c4c4",
+    padding: "4px 8px",
+    marginLeft: "2px",
+    borderRadius: "4px",
+    fontSize: 14,
+  },
+  cellColumn: {
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+    borderTop: "1px solid rgba(224, 224, 224, 1)",
+  },
+  todayColumn: {
+    border: "1px solid rgba(224, 224, 224, 1)",
+    borderTop: "5px solid #1a75ff",
+  },
+  cell: {
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+  },
+  nowrap: {
+    whiteSpace: "nowrap",
+  },
 });
 
 type RowType = {
@@ -68,10 +108,9 @@ type RenderUslProps = {
   dt: Date;
 };
 
-
 export default function Sheduler(props: ShedulerPropsType) {
   const classes = useStyles();
-  const [usl] = React.useState(props.usl);
+  const { usl } = props;
   const [dt] = React.useState(props.dt ? props.dt : new Date());
   const [table, setTable] = React.useState<tableDataType>({
     cols: [],
@@ -82,15 +121,25 @@ export default function Sheduler(props: ShedulerPropsType) {
     const { usl, dt } = props;
     if (usl.isAborted) {
       // отмененное
-      return <BlockIcon style={{ backgroundColor: '#ff704d' }} className={classes.sheduledIcon} />;
+      return (
+        <BlockIcon
+          style={{ backgroundColor: "#ff704d" }}
+          className={classes.sheduledIcon}
+        />
+      );
     }
     if (!usl.isAborted && usl.dt < dt) {
       // сделано
-      return <CheckIcon style={{ backgroundColor: '#84e1a8' }} className={classes.sheduledIcon} />;
+      return (
+        <CheckIcon
+          style={{ backgroundColor: "rgb(54, 187, 106)" }}
+          className={classes.sheduledIcon}
+        />
+      );
     }
     if (!usl.isAborted && usl.dt > dt) {
       // планируется
-      return <AccessTimeIcon className={classes.sheduledIcon}/>
+      return <AccessTimeIcon className={classes.sheduledIcon} />;
     }
     return <>1</>;
   };
@@ -98,12 +147,16 @@ export default function Sheduler(props: ShedulerPropsType) {
   const RenderDay = (props: RenderDayProps) => {
     const { usls, dt } = props;
     return (
-      <>
-        {usls.sort((a, b) => { return a.dt > b.dt ? 1 : -1 }).map((u, n) => {
-          const key = `rd-${u.dt}-${n}`;
-          return <RenderUsl usl={u} dt={dt} key={key} />;
-        })}
-      </>
+      <div className={classes.nowrap}>
+        {usls
+          .sort((a, b) => {
+            return a.dt > b.dt ? 1 : -1;
+          })
+          .map((u, n) => {
+            const key = `rd-${u.dt}-${n}`;
+            return <RenderUsl usl={u} dt={dt} key={key} />;
+          })}
+      </div>
     );
   };
 
@@ -164,6 +217,20 @@ export default function Sheduler(props: ShedulerPropsType) {
     console.log("Usl:", usl);
   }, [table]);
 
+  const RenderTh = (col: ColumnType) => {
+    if (col.ctype === "data") {
+      const d = new Date(col.label);
+      return (
+        <span>
+          {`${d.getDate()} ${months[d.getMonth()]}`}
+          <br />
+          {days[d.getDay()]}
+        </span>
+      );
+    }
+    return col.label;
+  };
+
   return (
     <TableContainer className={classes.container}>
       <Table stickyHeader aria-label="sticky table" size="small">
@@ -174,8 +241,13 @@ export default function Sheduler(props: ShedulerPropsType) {
                 key={column.id}
                 align={column.align}
                 style={{ minWidth: column.minWidth }}
+                className={
+                  column.label === dt.toISOString().substring(0, 10)
+                    ? classes.todayColumn
+                    : classes.cellColumn
+                }
               >
-                {column.label}
+                {RenderTh(column)}
               </TableCell>
             ))}
           </TableRow>
@@ -189,7 +261,7 @@ export default function Sheduler(props: ShedulerPropsType) {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      className={indx === 0 ? classes.stickyCell : undefined}
+                      className={indx === 0 ? classes.stickyCell : classes.cell}
                     >
                       {renderCell(column, row)}
                     </TableCell>
