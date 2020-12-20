@@ -61,6 +61,7 @@ export const getRandomUsl = (): OneUslType => {
     name: randomUsl,
     ctype: randomCategory.ctype,
     isAborted: Math.random() > 0.9,
+    isNotPlanned: Math.random() > 0.9
   };
 };
 

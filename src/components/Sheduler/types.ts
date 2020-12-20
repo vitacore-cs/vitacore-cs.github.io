@@ -8,6 +8,7 @@ export type OneUslType = {
   name: string;
   ctype: UslCategoryType;
   isAborted: boolean;
+  isNotPlanned: boolean;
 };
 
 export type ShedulerPropsType = {

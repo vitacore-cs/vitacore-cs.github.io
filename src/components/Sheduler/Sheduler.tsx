@@ -8,6 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import CheckIcon from "@material-ui/icons/Check";
 import BlockIcon from "@material-ui/icons/Block";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { months, colors, days } from "./helpers";
 import {
   ShedulerPropsType,
@@ -42,7 +43,7 @@ const useStyles = makeStyles({
     borderLeft: "1px solid rgba(224, 224, 224, 1)",
     borderTop: "1px solid rgba(224, 224, 224, 1)",
   },
-  sheduledIcon: {
+  uslIcon: {
     color: "white",
     backgroundColor: "#c4c4c4",
     padding: "4px 8px",
@@ -88,7 +89,16 @@ const Sheduler = (props: ShedulerPropsType) => {
               return (
                 <BlockIcon
                   style={{ backgroundColor: "#ff704d" }}
-                  className={classes.sheduledIcon}
+                  className={classes.uslIcon}
+                />
+              );
+            }
+            if (usl.isNotPlanned && usl.dt < dt) {
+              // внеплановые
+              return (
+                <AddCircleOutlineIcon
+                  style={{ backgroundColor: "#ffcc99" }}
+                  className={classes.uslIcon}
                 />
               );
             }
@@ -97,13 +107,13 @@ const Sheduler = (props: ShedulerPropsType) => {
               return (
                 <CheckIcon
                   style={{ backgroundColor: "rgb(54, 187, 106)" }}
-                  className={classes.sheduledIcon}
+                  className={classes.uslIcon}
                 />
               );
             }
             if (!usl.isAborted && usl.dt > dt) {
               // планируется
-              return <AccessTimeIcon className={classes.sheduledIcon} />;
+              return <AccessTimeIcon className={classes.uslIcon} />;
             }
             return <></>;
           })}
@@ -227,8 +237,6 @@ const Sheduler = (props: ShedulerPropsType) => {
       </Table>
     </TableContainer>
   );
-}
+};
 
-
-
-export default Sheduler
+export default Sheduler;
