@@ -6,7 +6,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { oneUsl } from "./mockData";
+import { oneUsl, getCtypeColor } from "./mockData";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import CheckIcon from "@material-ui/icons/Check";
 import BlockIcon from "@material-ui/icons/Block";
@@ -92,6 +92,7 @@ type RowType = {
   value: any;
   ctype: "usl" | "uslCategory";
   rowname: string;
+  color?: string;
 };
 
 type ColumnType = {
@@ -170,30 +171,43 @@ export default function Sheduler(props: ShedulerPropsType) {
   };
 
   const renderCell = (col: ColumnType, row: RowType) => {
-    // первая колонка
-    if (col.ctype === "label") {
-      if (row.ctype === "uslCategory") {
-        return <strong>{row.value}</strong>;
+    const getCell = () => {
+      // первая колонка
+      if (col.ctype === "label") {
+        if (row.ctype === "uslCategory") {
+          return <strong>{row.value}</strong>;
+        }
+        return row.value;
       }
-      return row.value;
-    }
-    // Категория услуг - пустое значение
-    if (col.ctype === "data" && row.ctype === "uslCategory") {
-      return "";
-    }
-    // Один день назначений
-    if (col.ctype === "data" && row.ctype === "usl") {
-      return (
-        <RenderDay
-          usls={usl
-            .filter((i) => i.tday === col.label)
-            .filter((i) => i.name === row.value)}
-          dt={dt}
-        />
-      );
-    }
+      // Категория услуг - пустое значение
+      if (col.ctype === "data" && row.ctype === "uslCategory") {
+        return "";
+      }
+      // Один день назначений
+      if (col.ctype === "data" && row.ctype === "usl") {
+        return (
+          <RenderDay
+            usls={usl
+              .filter((i) => i.tday === col.label)
+              .filter((i) => i.name === row.value)}
+            dt={dt}
+          />
+        );
+      }
 
-    return <>Значение</>;
+      return <>Значение</>;
+    };
+
+    return (
+      <TableCell
+        key={col.id}
+        align={col.align}
+        className={col.ctype === "label" ? classes.stickyCell : classes.cell}
+        style = {{backgroundColor: row.color && col.ctype === "label" ? row.color : undefined}}
+      >
+        {getCell()}
+      </TableCell>
+    );
   };
 
   React.useEffect(() => {
@@ -201,7 +215,7 @@ export default function Sheduler(props: ShedulerPropsType) {
     const uslCategory = Array.from(new Set(usl.map((i) => i.ctype))).sort();
     const newRows: RowType[] = [];
     uslCategory.forEach((v) => {
-      newRows.push({ value: v, ctype: "uslCategory", rowname: "names" });
+      newRows.push({ value: v, ctype: "uslCategory", rowname: "names", color: getCtypeColor(v) });
       const names = Array.from(
         new Set(usl.filter((i) => i.ctype === v).map((i) => i.name))
       ).sort();
@@ -267,17 +281,7 @@ export default function Sheduler(props: ShedulerPropsType) {
           {table.rows.map((row) => {
             return (
               <TableRow hover role="checkbox" tabIndex={-1} key={row.value}>
-                {table.cols.map((column, indx) => {
-                  return (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      className={indx === 0 ? classes.stickyCell : classes.cell}
-                    >
-                      {renderCell(column, row)}
-                    </TableCell>
-                  );
-                })}
+                {table.cols.map((column, indx) => renderCell(column, row))}
               </TableRow>
             );
           })}

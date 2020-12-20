@@ -9,6 +9,22 @@ export type oneUsl = {
   name: string;
   ctype: ctype;
   isAborted: boolean;
+  color?: string;
+};
+
+export const getCtypeColor = (c: ctype) => {
+  switch (c) {
+    case "Hазначения":
+      return "#f3f7b2";
+    case "Исследования":
+      return "#c4f7c3";
+    case "Операции":
+      return "#c3e6f7";
+    case "Консультации":
+      return "#f7c3c7";
+    default:
+      return "yellow";
+  }
 };
 
 export const uslAll: ltype = [
@@ -58,27 +74,26 @@ export const getRandomUsl = (): oneUsl => {
   const dateEnd = new Date();
   dateEnd.setDate(dateEnd.getDate() + 3);
 
-  const dt = randomDate(dateStart, dateEnd)
+  const dt = randomDate(dateStart, dateEnd);
 
   const randomCategory = getRandomA(uslAll);
   const randomUsl = getRandomA(randomCategory.variants);
   return {
     dt,
-    tday: dt.toISOString().substring(0,10),
-    ttime: dt.toISOString().substring(11,16),
+    tday: dt.toISOString().substring(0, 10),
+    ttime: dt.toISOString().substring(11, 16),
     name: randomUsl,
     ctype: randomCategory.ctype,
-    isAborted: Math.random() > 0.9
+    isAborted: Math.random() > 0.9,
+    color: getCtypeColor(randomCategory.ctype),
   };
 };
 
 export const genUsl = (num?: number): oneUsl[] => {
-    const n = num? num: 100;
-    let res: oneUsl[] = [];
-    for (let i = 0; i < n; i++) { 
-        res.push(getRandomUsl())
-    }
-    return res;
-}
-
-
+  const n = num ? num : 100;
+  let res: oneUsl[] = [];
+  for (let i = 0; i < n; i++) {
+    res.push(getRandomUsl());
+  }
+  return res;
+};
