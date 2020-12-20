@@ -51,9 +51,18 @@ const useStyles = makeStyles({
     position: "sticky",
     background: "#fff",
     left: 0,
-    zIndex: 1,
+    zIndex: 10,
     borderRight: "1px solid rgba(224, 224, 224, 1)",
     borderLeft: "1px solid rgba(224, 224, 224, 1)",
+  },
+  stickyColumn: {
+    position: "sticky",
+    background: "rgba(224, 224, 224, 1)",
+    left: 0,
+    zIndex: 11,
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+    borderLeft: "1px solid rgba(224, 224, 224, 1)",
+    borderTop: "1px solid rgba(224, 224, 224, 1)",
   },
   sheduledIcon: {
     color: "white",
@@ -236,7 +245,7 @@ export default function Sheduler(props: ShedulerPropsType) {
       <Table stickyHeader aria-label="sticky table" size="small">
         <TableHead>
           <TableRow>
-            {table.cols.map((column) => (
+            {table.cols.map((column, index) => (
               <TableCell
                 key={column.id}
                 align={column.align}
@@ -244,6 +253,8 @@ export default function Sheduler(props: ShedulerPropsType) {
                 className={
                   column.label === dt.toISOString().substring(0, 10)
                     ? classes.todayColumn
+                    : index === 0
+                    ? classes.stickyColumn
                     : classes.cellColumn
                 }
               >
