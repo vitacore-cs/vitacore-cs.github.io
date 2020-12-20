@@ -1,31 +1,7 @@
-export type ctype = "Hазначения" | "Консультации" | "Исследования" | "Операции";
+import { OneUslType, UslCategoryType } from './types'
 
-export type ltype = { ctype: ctype; variants: string[] }[];
 
-export type oneUsl = {
-  tday: string;
-  ttime: string;
-  dt: Date;
-  name: string;
-  ctype: ctype;
-  isAborted: boolean;
-  color?: string;
-};
-
-export const getCtypeColor = (c: ctype) => {
-  switch (c) {
-    case "Hазначения":
-      return "#f3f7b2";
-    case "Исследования":
-      return "#c4f7c3";
-    case "Операции":
-      return "#c3e6f7";
-    case "Консультации":
-      return "#f7c3c7";
-    default:
-      return "yellow";
-  }
-};
+type ltype = { ctype: UslCategoryType; variants: string[] }[];
 
 export const uslAll: ltype = [
   {
@@ -68,7 +44,7 @@ const randomDate = (start: Date, end: Date) => {
   );
 };
 
-export const getRandomUsl = (): oneUsl => {
+export const getRandomUsl = (): OneUslType => {
   const dateStart = new Date();
   dateStart.setDate(dateStart.getDate() - 3);
   const dateEnd = new Date();
@@ -85,13 +61,12 @@ export const getRandomUsl = (): oneUsl => {
     name: randomUsl,
     ctype: randomCategory.ctype,
     isAborted: Math.random() > 0.9,
-    color: getCtypeColor(randomCategory.ctype),
   };
 };
 
-export const genUsl = (num?: number): oneUsl[] => {
+export const genUsl = (num?: number): OneUslType[] => {
   const n = num ? num : 100;
-  let res: oneUsl[] = [];
+  let res: OneUslType[] = [];
   for (let i = 0; i < n; i++) {
     res.push(getRandomUsl());
   }

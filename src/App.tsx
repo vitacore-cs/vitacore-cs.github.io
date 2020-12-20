@@ -2,7 +2,8 @@ import React from "react";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Sheduler from "./components/Sheduler/Sheduler";
-import { genUsl, oneUsl } from "./components/Sheduler/mockData";
+import { genUsl } from "./components/Sheduler/mockData";
+import { OneUslType } from "./components/Sheduler/types";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function App() {
   const classes = useStyles();
   const [num, setNum] = React.useState(100);
-  const [usl, setUsl] = React.useState<oneUsl[]>(genUsl(num));
+  const [usl, setUsl] = React.useState<OneUslType[]>(genUsl(num));
 
   React.useEffect(() => {
     console.log("Usl: ", usl);
